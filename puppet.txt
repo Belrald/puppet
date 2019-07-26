@@ -1,0 +1,38 @@
+on Master:
+sudo apt-get update
+apt-get install wget(pre-installed on aws)
+wget https://apt.puppetlabs.com/puppet-release-bionic.deb
+dpkg -i puppet-release-bionic.deb
+apt-get install puppetmaster -y
+apt policy puppetmaster
+sudo systemctl status puppet-master.service
+vim /etc/default/puppet-master
+-- JAVA_ARGS="-Xms512m -Xmx512m"
+systemctl restart puppet-master.service
+
+
+sudo ufw allow 8140/tcp
+
+//change code
+
+mkdir -p /etc/puppet/code/environments/production/manifests/
+nano /etc/puppet/code/environments/production/manifests/site.pp
+file {'/tmp/it_works.txt':		
+ensure => present,
+mode => '0644',
+content => "It works on ${ipaddress_eth0}!\n",
+}
+
+systemctl restart puppet-master
+
+
+//Puppet Agent
+sudo apt-get update
+apt-get install wget(pre-installed on aws)
+wget https://apt.puppetlabs.com/puppet-release-bionic.deb
+dpkg -i puppet-release-bionic.deb
+apt-get install puppet -y
+nano /ect/hosts (special the ip address)
+
+systemctl start puppet
+systemctl enable puppet
